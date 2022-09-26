@@ -3,8 +3,8 @@ let getProducts = fetch('http://localhost:3000/api/products')
   .then((response) => {
     return response.json();
   })
-  .then((value) => {
-    addProducts(value);
+  .then((data) => {
+    addProducts(data);
   })
   .catch((error) => {
     console.log('Error ' + error);
