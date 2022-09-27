@@ -49,6 +49,7 @@ function productAddToLocalstorage(fetchProductData) {
       id: fetchProductData._id,
       colour: prodColour,
       quantity: prodQuantity,
+      price: fetchProductData.price,
     };
 
     localStorage.setItem('myProd', JSON.stringify(myProd));
