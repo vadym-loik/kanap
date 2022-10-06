@@ -11,7 +11,7 @@ fetch(`http://localhost:3000/api/products/${productId}`)
   .then((data) => {
     renderProduct(data);
     productAddToLocalstorage(data);
-    console.log(data);
+    // console.log(data);
   })
   .catch((error) => {
     console.log('Error ' + error);
