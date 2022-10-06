@@ -36,16 +36,17 @@ const renderProduct = (fetchProductData) => {
 };
 
 // add product to the localStorage
-function productAddToLocalstorage(fetchProductData) {
+const productAddToLocalstorage = (fetchProductData) => {
   const addBtn = document.querySelector('#addToCart');
 
-  addBtn.addEventListener('click', () => {
+  addBtn.addEventListener('click', (event) => {
+    event.preventDefault();
     let prodColour = document.querySelector('#colors').value;
     let prodQuantity = document.querySelector('#quantity').value;
 
     const myProd = {
       img: fetchProductData.imageUrl,
-      name: fetchProductData.name,
+      titleName: fetchProductData.name,
       id: fetchProductData._id,
       colour: prodColour,
       quantity: prodQuantity,
@@ -53,7 +54,6 @@ function productAddToLocalstorage(fetchProductData) {
     };
 
     localStorage.setItem('myProd', JSON.stringify(myProd));
-    console.log(myProd);
   });
-}
+};
 // console.log(Array.isArray(fetchProductData.colors));
