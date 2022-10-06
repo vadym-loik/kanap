@@ -6,17 +6,6 @@ const deleteItem = document.querySelector('.deleteItem');
 let dataFromLocalstorage = localStorage.getItem('myProd');
 dataFromLocalstorage = JSON.parse(dataFromLocalstorage);
 
-const myCartData = [];
-
-// console.log(myCartData);
-
-const putDataToTheCard = () => {
-  myCartData.push(dataFromLocalstorage);
-  return myCartData;
-};
-
-putDataToTheCard();
-
 itemsCartSection.innerHTML += `<article class="cart__item" data-id="${dataFromLocalstorage.id}" data-color="${dataFromLocalstorage.colour}">
                 <div class="cart__item__img">
                   <img src="${dataFromLocalstorage.img}" alt="Photo of a sofa">
