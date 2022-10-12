@@ -3,7 +3,7 @@ const totalQuantity = document.querySelector('#totalQuantity');
 const totalPrice = document.querySelector('#totalPrice');
 const deleteItem = document.querySelector('.deleteItem');
 
-let dataFromLocalstorage = localStorage.getItem('myProd');
+let dataFromLocalstorage = localStorage.getItem('cartItems');
 dataFromLocalstorage = JSON.parse(dataFromLocalstorage);
 
 itemsCartSection.innerHTML += `<article class="cart__item" data-id="${dataFromLocalstorage.id}" data-color="${dataFromLocalstorage.colour}">
@@ -12,9 +12,9 @@ itemsCartSection.innerHTML += `<article class="cart__item" data-id="${dataFromLo
                 </div>
                 <div class="cart__item__content">
                   <div class="cart__item__content__description">
-                    <h2>${dataFromLocalstorage.titleName}</h2>
-                    <p>Colour : ${dataFromLocalstorage.colour}</p>
-                    <p>Price : ${dataFromLocalstorage.price}€</p>
+                    <h2>${dataFromLocalstorage.name}</h2>
+                    <p>${dataFromLocalstorage.colour}</p>
+                    <p>${dataFromLocalstorage.price}€</p>
                   </div>
                   <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
@@ -31,3 +31,5 @@ itemsCartSection.innerHTML += `<article class="cart__item" data-id="${dataFromLo
 const sumTotalQuantity = () => {};
 
 const sumTotalPrice = () => {};
+
+const deleteItemFn = () => {};
