@@ -1,3 +1,5 @@
+// Global Variables - can access anywhere
+
 // get URL parameter values
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
@@ -10,7 +12,7 @@ fetch(`http://localhost:3000/api/products/${productId}`)
   })
   .then((data) => {
     renderProduct(data);
-    productAddToLocalstorage(data);
+    // addToLocalstoreage(data._id);
     // console.log(data);
   })
   .catch((error) => {
@@ -33,27 +35,102 @@ const renderProduct = (fetchProductData) => {
     document.querySelector('#colors').innerHTML +=
       '<option value="' + color + ' "> ' + color + ' </option>';
   });
+  document.querySelector('#addToCart').dataset.productId = fetchProductData._id;
 };
 
 // add product to the localStorage
-const productAddToLocalstorage = (fetchProductData) => {
-  const addBtn = document.querySelector('#addToCart');
 
-  addBtn.addEventListener('click', (event) => {
-    event.preventDefault();
-    let prodColour = document.querySelector('#colors').value;
-    let prodQuantity = document.querySelector('#quantity').value;
-
-    const myProd = {
-      img: fetchProductData.imageUrl,
-      titleName: fetchProductData.name,
-      id: fetchProductData._id,
-      colour: prodColour,
-      quantity: prodQuantity,
-      price: fetchProductData.price,
-    };
-
-    localStorage.setItem('myProd', JSON.stringify(myProd));
-  });
+const createLocalstorageList = () => {
+  try {
+    if (window.localStorage.getItem('cartItems')) {
+      return;
+    }
+    window.localStorage.setItem('cartItems', JSON.stringify([]));
+    return window.localStorage.getItem('cartItems');
+  } catch (event) {
+    console.error(event);
+  }
 };
-// console.log(Array.isArray(fetchProductData.colors));
+
+createLocalstorageList();
+
+function addToLocalstoreage(newProductId) {
+  try {
+    let cartItemsLocal = JSON.parse(localStorage.getItem('cartItems'));
+
+    const prodColour = document.querySelector('#colors').value;
+    const prodQuantity = document.querySelector('#quantity').value;
+
+    if (cartItemsLocal === null) {
+      // IF cart is empty add to local storage without anything else.
+      let aProd = {
+        prodColour: prodColour,
+        prodQuantity: Number(prodQuantity),
+        productId: newProductId,
+        // need add the price
+      };
+
+      window.localStorage.setItem('cartItems', JSON.stringify(aProd));
+    } else {
+      // NOW check for existing product in local storage
+      const localStorageId = cartItemsLocal.productId;
+
+      if (newProductId === localStorageId) {
+        let newQty = Number(cartItemsLocal.prodQuantity) + Number(prodQuantity);
+        cartItemsLocal.prodQuantity = newQty;
+
+        // update the local storage
+        window.localStorage.setItem(
+          'cartItems',
+          JSON.stringify(cartItemsLocal)
+        );
+      }
+    }
+  } catch (event) {
+    console.error(event);
+  }
+}
+
+const addBtn = document.querySelector('#addToCart');
+addBtn.addEventListener('click', (event) => {
+  event.preventDefault();
+  addToLocalstoreage(productId);
+});
+
+// const prodAddToLocalstorage = (fetchProductData) => {
+//   const addBtn = document.querySelector('#addToCart');
+
+//   addBtn.addEventListener('click', (event) => {
+//     event.preventDefault();
+//     let prodColour = document.querySelector('#colors').value;
+//     let prodQuantity = document.querySelector('#quantity').value;
+
+//     let cartItemsLocal = localStorage.getItem('cartItems');
+
+//     if (cartItemsLocal === null) {
+//       console.log('+');
+
+//       let aProduct = {
+//         img: fetchProductData.imageUrl,
+//         name: fetchProductData.name,
+//         id: fetchProductData._id,
+//         colour: prodColour,
+//         quantity: prodQuantity,
+//         price: fetchProductData.price,
+//       };
+
+//       localStorage.setItem('cartItems', JSON.stringify(aProduct));
+//       console.log(aProduct);
+//     } else {
+//       // then get the existing cartItems from localStorage
+//       // .getItems()
+//       //
+//       // Get IF localStorage product id equals fetchProductData product id, then update it's quantity
+//       // you will need to use =+ operator for updating quantity
+//       //
+//       // Else if the colour is different use .setItem to create a new array item
+//       //
+//       // K.I.S.S
+//     }
+//   });
+// };
