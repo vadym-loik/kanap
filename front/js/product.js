@@ -71,52 +71,7 @@ function addToLocalStorage(product) {
   }
 }
 
-// function addToLocalstorage(newProductId, data) {
-//   try {
-//     let cartItemsLocal = JSON.parse(localStorage.getItem('cartItems'));
-
-//     const prodColour = document.querySelector('#colors').value;
-//     const prodQuantity = document.querySelector('#quantity').value;
-
-//     const prodImg = data.imageUrl;
-//     const prodName = data.name;
-//     const prodPrice = data.price;
-
-//     if (cartItemsLocal === null) {
-//       // IF cart is empty add to local storage without anything else
-//       let aProd = {
-//         prodColour: prodColour,
-//         prodQuantity: Number(prodQuantity),
-//         productId: newProductId,
-//         prodImg: prodImg,
-//         prodName: prodName,
-//         prodPrice: prodPrice,
-//         // need add the price
-//       };
-
-//       window.localStorage.setItem('cartItems', JSON.stringify(aProd));
-
-//       console.log(aProd);
-//     } else {
-//       // NOW check for existing product in local storage
-//       const localStorageId = cartItemsLocal.productId;
-
-//       if (newProductId === localStorageId) {
-//         let newQty = Number(cartItemsLocal.prodQuantity) + Number(prodQuantity);
-//         cartItemsLocal.prodQuantity = newQty;
-
-//         // update the local storage
-//         window.localStorage.setItem(
-//           'cartItems',
-//           JSON.stringify(cartItemsLocal)
-//         );
-//       }
-//     }
-//   } catch (event) {
-//     console.error(event);
-//   }
-// }
-
+// add product to the cart on click
 const addBtn = document.querySelector('#addToCart');
 addBtn.addEventListener('click', (event) => {
   event.preventDefault();
