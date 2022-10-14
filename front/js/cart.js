@@ -20,7 +20,7 @@ const cartItems = uniqueProductIds.map((id) => {
 
   // [prodA, prodB, prodB] ---> [prodA, prodB]
   const aggregatedGroup = productGroup.map((product) => {
-    // quntity sum
+    // quntity sum of the product
     const quantity = productGroup.reduce(
       (acc, cur) => cur.prodQuantity + acc,
       0
@@ -41,6 +41,7 @@ const cartItems = uniqueProductIds.map((id) => {
 
 console.log(cartItems);
 
+// add products to the cart DOM
 cartItems.forEach((cartItem) => {
   itemsCartSection.innerHTML += `<article class="cart__item" data-id="${cartItem.id}" data-color="${cartItem.colour}">
                 <div class="cart__item__img">
@@ -64,8 +65,6 @@ cartItems.forEach((cartItem) => {
                 </div>
               </article>`;
 });
-
-// const sumTotalQuantity = () => {};
 
 // const sumTotalPrice = () => {};
 
