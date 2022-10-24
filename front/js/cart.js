@@ -1,71 +1,83 @@
+// add product to the localstorage
+export function addToCart(product) {
+  try {
+    const productMap = JSON.parse(localStorage.getItem('cartItems'));
+
+    const colour = document.querySelector('#colors').value;
+    const quantity = parseInt(document.querySelector('#quantity').value);
+
+    const newProduct = { ...product, colour, quantity };
+    const productKey = product._id + colour;
+
+    if (productMap[productKey]) {
+      productMap[productKey].quantity = quantity;
+    } else {
+      productMap[productKey] = newProduct;
+    }
+
+    window.localStorage.setItem('cartItems', JSON.stringify(productMap));
+  } catch (event) {
+    console.error(event);
+  }
+}
+
+//delete product from the cart
+export function removeFromCart(product) {
+  try {
+    const productMap = JSON.parse(localStorage.getItem('cartItems'));
+
+    const colour = document.querySelector('#colors').value;
+
+    const productKey = product._id + colour;
+
+    if (productMap[productKey]) {
+      delete productMap[productKey];
+    }
+
+    window.localStorage.setItem('cartItems', JSON.stringify(productMap));
+  } catch (event) {
+    console.error(event);
+  }
+}
+
 const itemsCartSection = document.querySelector('#cart__items');
 const totalQuantity = document.querySelector('#totalQuantity');
 const totalPrice = document.querySelector('#totalPrice');
-const deleteItem = document.querySelector('.deleteItem');
 
-const cartItemsLocal = JSON.parse(localStorage.getItem('cartItems')) || [];
+const cartItemsLocal = JSON.parse(localStorage.getItem('cartItems')) || {};
 
-// aggregation (group products by id and colour)
-// get all product ID
-const productIds = cartItemsLocal.map((item) => item._id);
+// find unique key in the cart
+const cartItems = Object.keys(cartItemsLocal).map((key) => cartItemsLocal[key]);
 
-// delete duplicates
-const uniqueProductIds = [...new Set(productIds)];
-
-// prepare objects that will be displayed in the cart
-const cartItems = uniqueProductIds.map((id) => {
-  const productGroup = cartItemsLocal.filter((item) => {
-    return item._id === id;
-  });
-
-  // [prodA, prodB, prodB] ---> [prodA, prodB]
-  const aggregatedGroup = productGroup.map((product) => {
-    // quntity sum of the product
-    const quantity = productGroup.reduce(
-      (acc, cur) => cur.prodQuantity + acc,
-      0
-    );
-
-    return {
-      id: product._id,
-      name: product.name,
-      colour: product.prodColour,
-      price: product.price,
-      imageUrl: product.imageUrl,
-      quantity,
-    };
-  });
-
-  return aggregatedGroup[0];
-});
-
-console.log(cartItems);
-
-// add products to the cart DOM
+// add products to the cart (render)
 cartItems.forEach((cartItem) => {
-  itemsCartSection.innerHTML += `<article class="cart__item" data-id="${cartItem.id}" data-color="${cartItem.colour}">
+  let { id, imageUrl, name, colour, price, quantity } = cartItem;
+  itemsCartSection.innerHTML += `<article class="cart__item" data-id="${id}" data-color="${cartItem.colour}">
                 <div class="cart__item__img">
-                  <img src="${cartItem.imageUrl}" alt="Photo of a sofa">
+                  <img src="${imageUrl}" alt="Photo of a sofa">
                 </div>
                 <div class="cart__item__content">
                   <div class="cart__item__content__description">
-                    <h2>${cartItem.name}</h2>
-                    <p>${cartItem.colour}</p>
-                    <p>${cartItem.price}€</p>
+                    <h2>${name}</h2>
+                    <p>${colour}</p>
+                    <p>${price}€</p>
                   </div>
                   <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
                       <p>Quantity : </p>
-                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${cartItem.quantity}">
+                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${quantity}">
                     </div>
                     <div class="cart__item__content__settings__delete">
-                      <p class="deleteItem">Delete</p>
+                      <p class="deleteItem" data-key="">Delete</p>
                     </div>
                   </div>
                 </div>
               </article>`;
 });
 
-// const sumTotalPrice = () => {};
+const deleteItem = document.querySelector('.deleteItem');
+deleteItem.addEventListener('click', (event) => {
+  event.preventDefault();
 
-// const deleteItemFn = () => {};
+  removeFromCart();
+});
