@@ -1,3 +1,4 @@
+import { addToCart } from './cart';
 // Global Variables - can access anywhere
 
 // get URL parameter values
@@ -45,7 +46,7 @@ const createLocalstorageList = () => {
     if (window.localStorage.getItem('cartItems')) {
       return;
     }
-    window.localStorage.setItem('cartItems', JSON.stringify([]));
+    window.localStorage.setItem('cartItems', JSON.stringify({}));
     return window.localStorage.getItem('cartItems');
   } catch (event) {
     console.error(event);
@@ -54,27 +55,10 @@ const createLocalstorageList = () => {
 
 createLocalstorageList();
 
-// add product to the localstorage
-function addToLocalStorage(product) {
-  try {
-    const cartItemsLocal = JSON.parse(localStorage.getItem('cartItems'));
-
-    const prodColour = document.querySelector('#colors').value;
-    const prodQuantity = parseInt(document.querySelector('#quantity').value);
-
-    const newProduct = { ...product, prodColour, prodQuantity };
-
-    cartItemsLocal.push(newProduct);
-    window.localStorage.setItem('cartItems', JSON.stringify(cartItemsLocal));
-  } catch (event) {
-    console.error(event);
-  }
-}
-
 // add product to the cart on click
 const addBtn = document.querySelector('#addToCart');
 addBtn.addEventListener('click', (event) => {
   event.preventDefault();
 
-  addToLocalStorage(productData);
+  addToCart(productData);
 });
