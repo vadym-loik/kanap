@@ -1,4 +1,4 @@
-import { addToCart } from './cart';
+import { addToCart } from './cart.js';
 // Global Variables - can access anywhere
 
 // get URL parameter values
@@ -15,7 +15,7 @@ fetch(`http://localhost:3000/api/products/${productId}`)
   .then((data) => {
     renderProduct(data);
     productData = data;
-    console.log(data);
+    // console.log(data);
   })
   .catch((error) => {
     console.log('Error ' + error);
@@ -55,7 +55,7 @@ const createLocalstorageList = () => {
 
 createLocalstorageList();
 
-// add product to the cart on click
+// add product to the localStoreage on click
 const addBtn = document.querySelector('#addToCart');
 addBtn.addEventListener('click', (event) => {
   event.preventDefault();
