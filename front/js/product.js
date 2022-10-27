@@ -1,11 +1,10 @@
 import { addToCart } from './cart.js';
-// Global Variables - can access anywhere
 
 // get URL parameter values
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const productId = urlParams.get('id');
-let productData = [];
+let productData = {};
 
 //taking products from the API with IDs
 fetch(`http://localhost:3000/api/products/${productId}`)
@@ -14,6 +13,7 @@ fetch(`http://localhost:3000/api/products/${productId}`)
   })
   .then((data) => {
     renderProduct(data);
+
     productData = data;
     // console.log(data);
   })
@@ -22,22 +22,21 @@ fetch(`http://localhost:3000/api/products/${productId}`)
   });
 
 // take articles from the fetch and add them to the DOM
-const renderProduct = (fetchProductData) => {
+const renderProduct = (data) => {
   document.querySelector('.item__img').innerHTML =
     '<img class="prodImg" src="' +
-    fetchProductData.imageUrl +
+    data.imageUrl +
     '" alt="Kanap company logo">';
-  document.querySelector('#title').innerText = fetchProductData.name;
-  document.querySelector('#price').innerText = fetchProductData.price;
-  document.querySelector('#description').innerText =
-    fetchProductData.description;
+  document.querySelector('#title').innerText = data.name;
+  document.querySelector('#price').innerText = data.price;
+  document.querySelector('#description').innerText = data.description;
 
   // forEach loop for the colours
-  fetchProductData.colors.forEach((color) => {
+  data.colors.forEach((color) => {
     document.querySelector('#colors').innerHTML +=
       '<option value="' + color + ' "> ' + color + ' </option>';
   });
-  document.querySelector('#addToCart').dataset.productId = fetchProductData._id;
+  document.querySelector('#addToCart').dataset.productId = data._id;
 };
 
 //create empty array in the localStorage
@@ -52,7 +51,6 @@ const createLocalstorageList = () => {
     console.error(event);
   }
 };
-
 createLocalstorageList();
 
 // add product to the localStoreage on click
