@@ -11,17 +11,10 @@ const cartItems = Object.keys(cartItemsLocal).map((key) => cartItemsLocal[key]);
 export function addToCart(product) {
   try {
     const productMap = JSON.parse(localStorage.getItem('cartItems'));
-
     const colour = document.querySelector('#colors').value;
-    console.log(colour);
     const quantity = parseInt(document.querySelector('#quantity').value);
-    console.log(quantity);
-
     const newProduct = { ...product, colour, quantity };
-    console.log(newProduct);
-
     const productKey = product._id + colour;
-    console.log(productKey);
 
     if (productMap[productKey]) {
       productMap[productKey].quantity = quantity;
@@ -35,14 +28,12 @@ export function addToCart(product) {
   }
 }
 
-console.log(localStorage);
-console.log(cartItems);
-
 // add products to the cart (render)
-
 cartItems.forEach((cartItem) => {
   if (itemsCartSection) {
-    itemsCartSection.innerHTML += `<article class="cart__item" data-id="${cartItem.id}" data-color="${cartItem.colour}">
+    itemsCartSection.innerHTML += `<article class="cart__item" data-id="${
+      cartItem.id
+    }" data-color="${cartItem.colour}">
               <div class="cart__item__img">
                 <img src="${cartItem.imageUrl}" alt="Photo of a sofa">
               </div>
@@ -55,10 +46,14 @@ cartItems.forEach((cartItem) => {
                 <div class="cart__item__content__settings">
                   <div class="cart__item__content__settings__quantity">
                     <p>Quantity : </p>
-                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${cartItem.quantity}">
+                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${
+                      cartItem.quantity
+                    }">
                   </div>
                   <div class="cart__item__content__settings__delete">
-                    <p class="deleteItem" data-key="">Delete</p>
+                    <p class="deleteItem" data-key="${
+                      cartItem._id + cartItem.colour
+                    }">Delete</p>
                   </div>
                 </div>
               </div>
@@ -66,29 +61,27 @@ cartItems.forEach((cartItem) => {
   }
 });
 
-// //remove product from the cart
-// export function removeFromCart(product) {
-//   try {
-//     const productMap = JSON.parse(localStorage.getItem('cartItems'));
+//remove product from the cart
+function removeFromCart(id) {
+  try {
+    const productMap = JSON.parse(localStorage.getItem('cartItems'));
 
-//     const colour = document.querySelector('#colors').value;
+    if (productMap[id]) {
+      delete productMap[id];
+    }
 
-//     //create unique key with id and colour
-//     const productKey = product._id + colour;
+    window.localStorage.setItem('cartItems', JSON.stringify(productMap));
+  } catch (event) {
+    console.error(event);
+  }
+}
 
-//     if (productMap[productKey]) {
-//       delete productMap[productKey];
-//     }
-
-//     window.localStorage.setItem('cartItems', JSON.stringify(productMap));
-//   } catch (event) {
-//     console.error(event);
-//   }
-// }
-
-// const deleteItem = document.querySelector('.deleteItem');
-// deleteItem.addEventListener('click', (event) => {
-//   event.preventDefault();
-
-//   removeFromCart();
-// });
+// remove product from the cart
+const deleteItem = document.querySelectorAll('.deleteItem');
+deleteItem.forEach((deleteBtn) => {
+  deleteBtn.addEventListener('click', (event) => {
+    const productId = event.target.dataset.key;
+    console.log(productId);
+    removeFromCart(productId);
+  });
+});
