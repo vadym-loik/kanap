@@ -1,5 +1,5 @@
 const itemsCartSection = document.querySelector('#cart__items');
-const totalQuantity = document.querySelector('#totalQuantity');
+
 const totalPrice = document.querySelector('#totalPrice');
 
 const cartItemsLocal = JSON.parse(localStorage.getItem('cartItems')) || {};
@@ -27,6 +27,25 @@ export function addToCart(product) {
     console.error(event);
   }
 }
+
+// calculate the total quantity of the articles and total price
+const getTotalQuantity = async () => {
+  const quantity = document.querySelectorAll('.itemQuantity');
+  let totalQuantity = 0;
+  for (let i = 0; i < quantity.length; i++) {
+    let value = quantity[i].value;
+    totalQuantity += parseInt(value);
+  }
+  document.querySelector('#totalQuantity').innerHTML = totalQuantity;
+
+  // let totalPrice = 0;
+  // for (let i = 0; i < cartItemsLocal.length; i++) {
+  //   const productMap = JSON.parse(localStorage.getItem('cartItems'));
+  //   let item = cartItemsLocal[i];
+  //   productMap =
+
+  // }
+};
 
 // add products to the cart (render)
 cartItems.forEach((cartItem) => {
@@ -59,6 +78,7 @@ cartItems.forEach((cartItem) => {
               </div>
             </article>`;
   }
+  getTotalQuantity();
 });
 
 //remove product from the cart
