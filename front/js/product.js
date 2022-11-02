@@ -1,5 +1,3 @@
-import { addToCart } from './cart.js';
-
 // get URL parameter values
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
@@ -53,9 +51,32 @@ const createLocalstorageList = () => {
 };
 createLocalstorageList();
 
+// add product to the localstorage
+function addToCart(product) {
+  try {
+    const productMap = JSON.parse(localStorage.getItem('cartItems'));
+    const colour = document.querySelector('#colors').value;
+    const quantity = parseInt(document.querySelector('#quantity').value);
+    const newProduct = { ...product, colour, quantity };
+    const productKey = product._id + colour;
+    console.log(productKey);
+
+    if (productMap[productKey]) {
+      productMap[productKey].quantity = quantity;
+    } else {
+      productMap[productKey] = newProduct;
+    }
+
+    window.localStorage.setItem('cartItems', JSON.stringify(productMap));
+  } catch (event) {
+    console.error(event);
+  }
+}
+
 // add product to the localStoreage on click
 const addBtn = document.querySelector('#addToCart');
 addBtn.addEventListener('click', (event) => {
+  console.log('AAAAA');
   event.preventDefault();
   addToCart(productData);
 });
