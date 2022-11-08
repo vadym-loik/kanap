@@ -1,6 +1,8 @@
-const itemsCartSection = document.querySelector('#cart__items');
-
+/*************** CART ***************/
 // find unique key in the cart object
+
+// console.log(cartItemsLocal);
+
 function getCartItems() {
   const cartItemsLocal = JSON.parse(localStorage.getItem('cartItems')) || {};
   return Object.keys(cartItemsLocal).map((key) => cartItemsLocal[key]);
@@ -8,23 +10,24 @@ function getCartItems() {
 
 //render products on the cart page
 const renderProductCart = (cartItems) => {
+  const itemsCartSection = document.querySelector('#cart__items');
   itemsCartSection.innerHTML = '';
-  cartItems.forEach((cartItem) => {
-    const datakey = cartItem._id + cartItem.colour;
-    itemsCartSection.innerHTML += `<article class="cart__item" data-id="${cartItem.id}" data-color="${cartItem.colour}">
+  cartItems.forEach((item) => {
+    const datakey = item._id + item.colour;
+    itemsCartSection.innerHTML += `<article class="cart__item" data-id="${item.id}" data-color="${item.colour}">
               <div class="cart__item__img">
-                <img src="${cartItem.imageUrl}" alt="Photo of a sofa">
+                <img src="${item.imageUrl}" alt="Photo of a sofa">
               </div>
               <div class="cart__item__content">
                 <div class="cart__item__content__description">
-                  <h2>${cartItem.name}</h2>
-                  <p>${cartItem.colour}</p>
-                  <p>${cartItem.price}€</p>
+                  <h2>${item.name}</h2>
+                  <p>${item.colour}</p>
+                  <p>${item.price}€</p>
                 </div>
                 <div class="cart__item__content__settings">
                   <div class="cart__item__content__settings__quantity">
                     <p>Quantity : </p>
-                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${cartItem.quantity}">
+                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${item.quantity}">
                   </div>
                   <div class="cart__item__content__settings__delete">
                     <p class="deleteItem" data-key="${datakey}">Delete</p>
@@ -37,8 +40,6 @@ const renderProductCart = (cartItems) => {
     deleteItems.forEach((deleteBtn) => {
       addDeleteEventlistener(deleteBtn);
     });
-
-    // sdelat' tut forEach dlya changeQuantity
   });
 };
 renderProductCart(getCartItems());
@@ -48,6 +49,7 @@ function addDeleteEventlistener(deleteItem) {
     const productId = event.target.dataset.key;
 
     removeFromCart(productId);
+    // console.log(productId);
   });
 }
 
@@ -55,52 +57,82 @@ function addDeleteEventlistener(deleteItem) {
 function removeFromCart(id) {
   try {
     const productMap = JSON.parse(localStorage.getItem('cartItems'));
-    // console.log(productMap);
 
     if (productMap[id]) {
       delete productMap[id];
     }
+    // console.log(productMap[id]);
 
     window.localStorage.setItem('cartItems', JSON.stringify(productMap));
     renderProductCart(getCartItems());
   } catch (event) {
     console.error(event);
   }
+  getTotalQuantity();
 }
 
 // calculate the total quantity of the articles and total price
-const getTotalQuantity = () => {
-  let totalQuantity = 0;
-  let totalPrice = 0;
+function getTotalQuantity() {
   const cartItems = getCartItems();
-  for (let i = 0; i < cartItems.length; i++) {
-    let value = cartItems[i].quantity;
-    totalQuantity += parseInt(value);
-    let item = cartItems[i].price;
-    totalPrice += parseInt(item) * cartItems[i].quantity;
-  }
-  document.querySelector('#totalQuantity').innerHTML = totalQuantity;
-  document.querySelector('#totalPrice').innerHTML = totalPrice;
-};
+  const totalQuantity = cartItems.reduce(
+    (totalQuantity, item) => totalQuantity + parseInt(item.quantity),
+    0
+  );
+
+  const totalPrice = cartItems.reduce(
+    (totalPrice, item) =>
+      totalPrice + parseInt(item.price) * parseInt(item.quantity),
+    0
+  );
+
+  document.querySelector('#totalQuantity').textContent = totalQuantity;
+  document.querySelector('#totalPrice').textContent = totalPrice;
+}
+getTotalQuantity();
 
 // change quantity function
 const changeQuantity = () => {
   const inputBtn = document.querySelectorAll('.itemQuantity');
-  const cartItems = getCartItems();
-  for (let i = 0; i < cartItems.length; i++) {
+  const productMap = JSON.parse(localStorage.getItem('cartItems'));
+  const cartItemKeys = Object.keys(productMap);
+
+  cartItemKeys.forEach((productKey, i) => {
     inputBtn[i].addEventListener('change', (event) => {
       event.preventDefault();
 
-      let modifiedValue = inputBtn[i].value;
+      const modifiedValue = parseInt(inputBtn[i].value);
       console.log(modifiedValue);
 
       if (modifiedValue > 0 && modifiedValue <= 100) {
-        cartItems[i].quantity = modifiedValue;
-        window.localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        productMap[productKey].quantity = modifiedValue;
+
+        window.localStorage.setItem('cartItems', JSON.stringify(productMap));
+        getTotalQuantity();
       }
     });
-  }
-
-  getTotalQuantity();
+  });
 };
 changeQuantity();
+
+// program to validate the email address
+
+// function validateEmail(email) {
+
+//     // regex pattern for email
+//     const re = /\S+@\S+\.\S+/g;
+
+//     // check if the email is valid
+//     let result = re.test(email);
+//     if (result) {
+//         console.log('The email is valid.');
+//     }
+//     else {
+//         let newEmail = prompt('Enter a valid email:');
+//         validateEmail(newEmail);
+//     }
+// }
+
+// // take input
+// let email = prompt('Enter an email: ');
+
+// validateEmail(email);
