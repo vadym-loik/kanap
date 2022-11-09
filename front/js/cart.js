@@ -114,25 +114,166 @@ const changeQuantity = () => {
 };
 changeQuantity();
 
-// program to validate the email address
+/***********************FORM **********************/
 
-// function validateEmail(email) {
+// Regular Expressions
+const nameFirstLastRegExp = new RegExp(`^[A-Za-z- ]+$`);
+const adressRegExp = new RegExp(
+  `^[a-zA-Zàâäéèêëïîôöùûüç0-9-,'.; ]{2,70}$`,
+  `g`
+);
+const cityRegExp = new RegExp(`^[a-zA-Zàâäéèêëïîôöùûüç0-9 ]{2,31}$`, `g`);
+const emailRegExp = new RegExp(`^[A-Za-z0-9+_.-]+@(.+)$`, `g`);
 
-//     // regex pattern for email
-//     const re = /\S+@\S+\.\S+/g;
+const form = document.querySelector('.cart__order__form');
 
-//     // check if the email is valid
-//     let result = re.test(email);
-//     if (result) {
-//         console.log('The email is valid.');
-//     }
-//     else {
-//         let newEmail = prompt('Enter a valid email:');
-//         validateEmail(newEmail);
-//     }
-// }
+// get the data from the form
+function getFormData() {
+  // validations of the inputs
+  function firstNameValidation(firstName) {
+    const testFirstName = nameFirstLastRegExp.test(firstName.value);
 
-// // take input
-// let email = prompt('Enter an email: ');
+    if (testFirstName === true) {
+      firstNameErrorMsg.textContent = '';
+    } else {
+      firstNameErrorMsg.textContent = 'The first name is not valid!';
+      return true;
+    }
+  }
 
-// validateEmail(email);
+  function lastNameValidation(lastName) {
+    const testLastName = nameFirstLastRegExp.test(lastName.value);
+
+    if (testLastName === true) {
+      lastNameErrorMsg.textContent = '';
+    } else {
+      lastNameErrorMsg.textContent = 'The last name is not valid!';
+      return true;
+    }
+  }
+
+  function addressValidation(address) {
+    const testAddress = adressRegExp.test(address.value);
+
+    if (testAddress === true) {
+      addressErrorMsg.textContent = '';
+    } else {
+      addressErrorMsg.textContent = 'The address is not valid!';
+      return true;
+    }
+  }
+
+  function cityValidation(city) {
+    const testCity = cityRegExp.test(city.value);
+
+    if (testCity === true) {
+      cityErrorMsg.textContent = '';
+    } else {
+      cityErrorMsg.textContent = 'The city is not valid!';
+      return true;
+    }
+  }
+
+  function emailValidation(email) {
+    const testEmail = emailRegExp.test(email.value);
+
+    if (testEmail === true) {
+      emailErrorMsg.textContent = '';
+    } else {
+      emailErrorMsg.textContent = 'The e-mail is not valid!';
+      return true;
+    }
+  }
+
+  // event listeners for inputs
+  form.firstName.addEventListener('change', function () {
+    firstNameValidation(this);
+  });
+  form.lastName.addEventListener('change', function () {
+    lastNameValidation(this);
+  });
+  form.address.addEventListener('change', function () {
+    addressValidation(this);
+  });
+  form.city.addEventListener('change', function () {
+    cityValidation(this);
+  });
+  form.email.addEventListener('change', function () {
+    emailValidation(this);
+  });
+}
+getFormData();
+
+// all inputs must be filled in
+function formInputsValidation() {
+  const inputs = form.querySelectorAll('input');
+
+  inputs.forEach((input) => {
+    if (input.value === '') {
+      alert('Please fill in all fields!');
+      return true;
+    }
+    return false;
+  });
+}
+
+// post data from the form to the localStoreage
+function postFormData() {
+  const orderBtn = document.querySelector('#order');
+
+  // listener for the order button
+  orderBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    const inputFirstName = document.querySelector('#firstName');
+    const inputLastName = document.querySelector('#lastName');
+    const inputAddress = document.querySelector('#address');
+    const inputCity = document.querySelector('#city');
+    const inputEmail = document.querySelector('#email');
+
+    // creat an array in localStoreage for data form
+    const orderInfo = [];
+    const productMap = JSON.parse(localStorage.getItem('cartItems'));
+    const cartItemsKeys = Object.keys(productMap);
+    console.log(cartItemsKeys);
+
+    cartItemsKeys.forEach((productKey) => {
+      orderInfo.push(productMap[productKey]);
+    });
+    console.log(orderInfo);
+
+    const contact = {
+      contact: {
+        firstName: inputFirstName.value,
+        lastName: inputLastName.value,
+        address: inputAddress.value,
+        city: inputCity.value,
+        email: inputEmail.value,
+      },
+      product: orderInfo,
+    };
+    console.log(contact);
+
+    // const options = {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(order),
+    // };
+
+    // fetch('http://localhost:3000/api/products/order', options)
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     // localStorage.clear();
+    //     localStorage.setItem('orderId', data.orderId);
+
+    //     // document.location.href = 'confirmation.html';
+    //   })
+    //   .catch((error) => {
+    //     alert('Error ' + error);
+    //   });
+
+    formInputsValidation();
+  });
+}
+postFormData();
