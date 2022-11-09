@@ -76,7 +76,6 @@ function addToCart(product) {
 // add product to the localStoreage on click
 const addBtn = document.querySelector('#addToCart');
 addBtn.addEventListener('click', (event) => {
-  console.log('AAAAA');
   event.preventDefault();
   addToCart(productData);
 });
