@@ -231,15 +231,15 @@ function postFormData() {
     const inputEmail = document.querySelector('#email');
 
     // creat an array in localStoreage for data form
-    const orderInfo = [];
+    const productsId = [];
     const productMap = JSON.parse(localStorage.getItem('cartItems'));
+    console.log(productMap);
     const cartItemsKeys = Object.keys(productMap);
     console.log(cartItemsKeys);
 
     cartItemsKeys.forEach((productKey) => {
-      orderInfo.push(productMap[productKey]);
+      productsId.push(productKey);
     });
-    console.log(orderInfo);
 
     const contact = {
       contact: {
@@ -249,31 +249,40 @@ function postFormData() {
         city: inputCity.value,
         email: inputEmail.value,
       },
-      product: orderInfo,
+      product: productsId,
     };
     console.log(contact);
 
-    // const options = {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(order),
-    // };
+    const options = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(contact),
+    };
 
-    // fetch('http://localhost:3000/api/products/order', options)
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     // localStorage.clear();
-    //     localStorage.setItem('orderId', data.orderId);
-
-    //     // document.location.href = 'confirmation.html';
-    //   })
-    //   .catch((error) => {
-    //     alert('Error ' + error);
-    //   });
+    fetch('http://localhost:3000/api/products/order', options)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Success:', data);
+        // localStorage.clear();
+        localStorage.setItem('orderId', data);
+        // document.location.href = 'confirmation.html';
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     formInputsValidation();
   });
 }
 postFormData();
+
+// .then((data) => {
+//   // console.log('Success:', data);
+//   if (!data.ok) {
+//     throw Error(data.status);
+//   }
+//   return data.json();
+// })
