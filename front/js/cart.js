@@ -57,11 +57,10 @@ function addDeleteEventlistener(deleteItem) {
 function removeFromCart(id) {
   try {
     const productMap = JSON.parse(localStorage.getItem('cartItems'));
-
+    console.log(productMap[id]);
     if (productMap[id]) {
       delete productMap[id];
     }
-    // console.log(productMap[id]);
 
     window.localStorage.setItem('cartItems', JSON.stringify(productMap));
     renderProductCart(getCartItems());
@@ -94,20 +93,23 @@ getTotalQuantity();
 const changeQuantity = () => {
   const inputBtn = document.querySelectorAll('.itemQuantity');
   const productMap = JSON.parse(localStorage.getItem('cartItems'));
+  // console.log(productMap);
   const cartItemKeys = Object.keys(productMap);
+  // console.log(cartItemKeys);
 
   cartItemKeys.forEach((productKey, i) => {
     inputBtn[i].addEventListener('change', (event) => {
       event.preventDefault();
 
       const modifiedValue = parseInt(inputBtn[i].value);
-      console.log(modifiedValue);
+      // console.log(modifiedValue);
 
-      if (modifiedValue > 0 && modifiedValue <= 100) {
+      if (modifiedValue) {
         productMap[productKey].quantity = modifiedValue;
 
         window.localStorage.setItem('cartItems', JSON.stringify(productMap));
         getTotalQuantity();
+        // console.log(localStorage);
       }
     });
   });
@@ -188,6 +190,7 @@ function getFormData() {
   // event listeners for inputs
   form.firstName.addEventListener('change', function () {
     firstNameValidation(this);
+    // console.log(this);
   });
   form.lastName.addEventListener('change', function () {
     lastNameValidation(this);
@@ -224,6 +227,7 @@ function postFormData() {
   // listener for the order button
   orderBtn.addEventListener('click', (event) => {
     event.preventDefault();
+
     const inputFirstName = document.querySelector('#firstName');
     const inputLastName = document.querySelector('#lastName');
     const inputAddress = document.querySelector('#address');
@@ -234,14 +238,17 @@ function postFormData() {
     const productsId = [];
     const productMap = JSON.parse(localStorage.getItem('cartItems'));
     console.log(productMap);
-    const cartItemsKeys = Object.keys(productMap);
-    console.log(cartItemsKeys);
 
-    cartItemsKeys.forEach((productKey) => {
-      productsId.push(productKey);
+    const idsProducts = Object.keys(productMap).map(
+      (productKey) => productMap[productKey]._id
+    );
+    console.log(idsProducts);
+
+    idsProducts.forEach((_id) => {
+      productsId.push(_id);
     });
 
-    const contact = {
+    const order = {
       contact: {
         firstName: inputFirstName.value,
         lastName: inputLastName.value,
@@ -249,40 +256,31 @@ function postFormData() {
         city: inputCity.value,
         email: inputEmail.value,
       },
-      product: productsId,
+      products: productsId,
     };
-    console.log(contact);
+    console.log(order);
 
     const options = {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        'content-type': 'application/json',
       },
-      body: JSON.stringify(contact),
+      body: JSON.stringify(order),
     };
+    console.log(options);
 
     fetch('http://localhost:3000/api/products/order', options)
       .then((response) => response.json())
       .then((data) => {
         console.log('Success:', data);
-        // localStorage.clear();
-        localStorage.setItem('orderId', data);
-        // document.location.href = 'confirmation.html';
+        localStorage.clear();
+        localStorage.setItem('orderId', data.orderId);
+
+        document.location.href = 'confirmation.html';
       })
       .catch((error) => {
         console.log(error);
       });
-
-    formInputsValidation();
   });
 }
 postFormData();
-
-// .then((data) => {
-//   // console.log('Success:', data);
-//   if (!data.ok) {
-//     throw Error(data.status);
-//   }
-//   return data.json();
-// })

@@ -1,6 +1,8 @@
 function showOrderId() {
   const orderId = document.querySelector('#orderId');
-  orderId.innerText = localStorage.getItem('orederId');
-  //   localStorage.clear();
+
+  orderId.textContent = localStorage.orderId;
+
+  localStorage.clear();
 }
 showOrderId();

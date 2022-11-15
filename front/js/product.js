@@ -32,7 +32,7 @@ const renderProduct = (data) => {
   // forEach loop for the colours
   data.colors.forEach((color) => {
     document.querySelector('#colors').innerHTML +=
-      '<option value="' + color + ' "> ' + color + ' </option>';
+      '<option value="' + color + '"> ' + color + ' </option>';
   });
   document.querySelector('#addToCart').dataset.productId = data._id;
 };
