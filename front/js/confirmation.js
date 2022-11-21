@@ -1,8 +1,9 @@
+// render orderId on the page
 function showOrderId() {
-  const orderId = document.querySelector('#orderId');
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get('orderId');
+  const renderId = document.querySelector('#orderId');
 
-  orderId.textContent = localStorage.orderId;
-
-  localStorage.clear();
+  renderId.textContent = orderId;
 }
 showOrderId();

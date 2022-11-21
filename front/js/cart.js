@@ -1,8 +1,8 @@
 /*************** CART ***************/
+// const button = document.querySelector('#order');
+// button.disabled = true;
+
 // find unique key in the cart object
-
-// console.log(cartItemsLocal);
-
 function getCartItems() {
   const cartItemsLocal = JSON.parse(localStorage.getItem('cartItems')) || {};
   return Object.keys(cartItemsLocal).map((key) => cartItemsLocal[key]);
@@ -128,6 +128,11 @@ const cityRegExp = new RegExp(`^[a-zA-Zàâäéèêëïîôöùûüç0-9 ]{2,31}
 const emailRegExp = new RegExp(`^[A-Za-z0-9+_.-]+@(.+)$`, `g`);
 
 const form = document.querySelector('.cart__order__form');
+const inputFirstName = document.querySelector('#firstName');
+const inputLastName = document.querySelector('#lastName');
+const inputAddress = document.querySelector('#address');
+const inputCity = document.querySelector('#city');
+const inputEmail = document.querySelector('#email');
 
 // get the data from the form
 function getFormData() {
@@ -207,20 +212,7 @@ function getFormData() {
 }
 getFormData();
 
-// all inputs must be filled in
-function formInputsValidation() {
-  const inputs = form.querySelectorAll('input');
-
-  inputs.forEach((input) => {
-    if (input.value === '') {
-      alert('Please fill in all fields!');
-      return true;
-    }
-    return false;
-  });
-}
-
-// post data from the form to the localStoreage
+// post data from the form to the API
 function postFormData() {
   const orderBtn = document.querySelector('#order');
 
@@ -228,59 +220,65 @@ function postFormData() {
   orderBtn.addEventListener('click', (event) => {
     event.preventDefault();
 
-    const inputFirstName = document.querySelector('#firstName');
-    const inputLastName = document.querySelector('#lastName');
-    const inputAddress = document.querySelector('#address');
-    const inputCity = document.querySelector('#city');
-    const inputEmail = document.querySelector('#email');
+    if (
+      inputFirstName.value == '' ||
+      inputLastName.value == '' ||
+      inputAddress.value == '' ||
+      inputCity.value == '' ||
+      inputEmail.value == ''
+    ) {
+      alert('Please fill in all fields!');
+    }
+    // else if () {}
+    else {
+      // button.disabled = false;
+      // creat an array for data form
+      const productsId = [];
+      const productMap = JSON.parse(localStorage.getItem('cartItems'));
+      console.log(productMap);
 
-    // creat an array in localStoreage for data form
-    const productsId = [];
-    const productMap = JSON.parse(localStorage.getItem('cartItems'));
-    console.log(productMap);
+      const idsProducts = Object.keys(productMap).map(
+        (productKey) => productMap[productKey]._id
+      );
+      console.log(idsProducts);
 
-    const idsProducts = Object.keys(productMap).map(
-      (productKey) => productMap[productKey]._id
-    );
-    console.log(idsProducts);
-
-    idsProducts.forEach((_id) => {
-      productsId.push(_id);
-    });
-
-    const order = {
-      contact: {
-        firstName: inputFirstName.value,
-        lastName: inputLastName.value,
-        address: inputAddress.value,
-        city: inputCity.value,
-        email: inputEmail.value,
-      },
-      products: productsId,
-    };
-    console.log(order);
-
-    const options = {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(order),
-    };
-    console.log(options);
-
-    fetch('http://localhost:3000/api/products/order', options)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Success:', data);
-        localStorage.clear();
-        localStorage.setItem('orderId', data.orderId);
-
-        document.location.href = 'confirmation.html';
-      })
-      .catch((error) => {
-        console.log(error);
+      idsProducts.forEach((_id) => {
+        productsId.push(_id);
       });
+
+      const order = {
+        contact: {
+          firstName: inputFirstName.value,
+          lastName: inputLastName.value,
+          address: inputAddress.value,
+          city: inputCity.value,
+          email: inputEmail.value,
+        },
+        products: productsId,
+      };
+      console.log(order);
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify(order),
+      };
+      console.log(options);
+
+      fetch('http://localhost:3000/api/products/order', options)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Success:', data);
+          localStorage.clear();
+
+          window.location.href = 'confirmation.html?orderId=' + data.orderId;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   });
 }
 postFormData();
