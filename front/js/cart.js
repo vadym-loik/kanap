@@ -1,6 +1,4 @@
 /*************** CART ***************/
-// const button = document.querySelector('#order');
-// button.disabled = true;
 
 // find unique key in the cart object
 function getCartItems() {
@@ -116,17 +114,18 @@ const changeQuantity = () => {
 };
 changeQuantity();
 
-/***********************FORM **********************/
+/*********************** FORM **********************/
 
 // Regular Expressions
 const nameFirstLastRegExp = new RegExp(`^[A-Za-z- ]+$`);
 const adressRegExp = new RegExp(
-  `^[a-zA-Zàâäéèêëïîôöùûüç0-9-,'.; ]{2,70}$`,
-  `g`
+  `^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)*$`
 );
-const cityRegExp = new RegExp(`^[a-zA-Zàâäéèêëïîôöùûüç0-9 ]{2,31}$`, `g`);
+
+const cityRegExp = new RegExp(`^[a-zA-Zàâäéèêëïîôöùûüç ]{2,31}$`, `g`);
 const emailRegExp = new RegExp(`^[A-Za-z0-9+_.-]+@(.+)$`, `g`);
 
+// global variables
 const form = document.querySelector('.cart__order__form');
 const inputFirstName = document.querySelector('#firstName');
 const inputLastName = document.querySelector('#lastName');
@@ -137,77 +136,29 @@ const inputEmail = document.querySelector('#email');
 // get the data from the form
 function getFormData() {
   // validations of the inputs
-  function firstNameValidation(firstName) {
-    const testFirstName = nameFirstLastRegExp.test(firstName.value);
-
-    if (testFirstName === true) {
-      firstNameErrorMsg.textContent = '';
+  let testFormInputs = (name, regExp, error) => {
+    if (name.value.match(regExp)) {
+      error.textContent = '';
     } else {
-      firstNameErrorMsg.textContent = 'The first name is not valid!';
-      return true;
+      error.textContent = 'Incorrect format!';
     }
-  }
-
-  function lastNameValidation(lastName) {
-    const testLastName = nameFirstLastRegExp.test(lastName.value);
-
-    if (testLastName === true) {
-      lastNameErrorMsg.textContent = '';
-    } else {
-      lastNameErrorMsg.textContent = 'The last name is not valid!';
-      return true;
-    }
-  }
-
-  function addressValidation(address) {
-    const testAddress = adressRegExp.test(address.value);
-
-    if (testAddress === true) {
-      addressErrorMsg.textContent = '';
-    } else {
-      addressErrorMsg.textContent = 'The address is not valid!';
-      return true;
-    }
-  }
-
-  function cityValidation(city) {
-    const testCity = cityRegExp.test(city.value);
-
-    if (testCity === true) {
-      cityErrorMsg.textContent = '';
-    } else {
-      cityErrorMsg.textContent = 'The city is not valid!';
-      return true;
-    }
-  }
-
-  function emailValidation(email) {
-    const testEmail = emailRegExp.test(email.value);
-
-    if (testEmail === true) {
-      emailErrorMsg.textContent = '';
-    } else {
-      emailErrorMsg.textContent = 'The e-mail is not valid!';
-      return true;
-    }
-  }
+  };
 
   // event listeners for inputs
-  form.firstName.addEventListener('change', function () {
-    firstNameValidation(this);
-    // console.log(this);
+  form.firstName.addEventListener('change', () => {
+    testFormInputs(inputFirstName, nameFirstLastRegExp, firstNameErrorMsg);
   });
-  form.lastName.addEventListener('change', function () {
-    lastNameValidation(this);
+  form.lastName.addEventListener('change', () => {
+    testFormInputs(inputLastName, nameFirstLastRegExp, lastNameErrorMsg);
   });
-  form.address.addEventListener('change', function () {
-    addressValidation(this);
+  form.address.addEventListener('change', () => {
+    testFormInputs(inputAddress, adressRegExp, addressErrorMsg);
   });
-  form.city.addEventListener('change', function () {
-    cityValidation(this);
+  form.city.addEventListener('change', () => {
+    testFormInputs(inputCity, cityRegExp, cityErrorMsg);
   });
-  form.email.addEventListener('change', function () {
-    emailValidation(this);
+  form.email.addEventListener('change', () => {
+    testFormInputs(inputEmail, emailRegExp, emailErrorMsg);
   });
 }
 getFormData();
@@ -228,11 +179,16 @@ function postFormData() {
       inputEmail.value == ''
     ) {
       alert('Please fill in all fields!');
-    }
-    // else if () {}
-    else {
-      // button.disabled = false;
-      // creat an array for data form
+    } else if (
+      firstNameErrorMsg.textContent !== '' ||
+      lastNameErrorMsg.textContent !== '' ||
+      addressErrorMsg.textContent !== '' ||
+      cityErrorMsg.textContent !== '' ||
+      emailErrorMsg.textContent !== ''
+    ) {
+      alert('Make sure all the fields are filled in correctly!');
+    } else {
+      // creat an array for the form data
       const productsId = [];
       const productMap = JSON.parse(localStorage.getItem('cartItems'));
       console.log(productMap);
