@@ -19,7 +19,7 @@ fetch(`http://localhost:3000/api/products/${productId}`)
     console.log('Error ' + error);
   });
 
-// take articles from the fetch and add them to the DOM
+// take article from the fetch and add them to the DOM "product page"
 const renderProduct = (data) => {
   document.querySelector('.item__img').innerHTML =
     '<img class="prodImg" src="' +
@@ -37,7 +37,7 @@ const renderProduct = (data) => {
   document.querySelector('#addToCart').dataset.productId = data._id;
 };
 
-//create empty array in the localStorage
+//create empty object in the localStorage
 const createLocalstorageList = () => {
   try {
     if (window.localStorage.getItem('cartItems')) {
@@ -58,6 +58,7 @@ function addToCart(product) {
     const colour = document.querySelector('#colors').value;
     const quantity = parseInt(document.querySelector('#quantity').value);
     const newProduct = { ...product, colour, quantity };
+    // create unique key with id and color of the product
     const productKey = product._id + colour;
     console.log(productKey);
 
@@ -67,6 +68,7 @@ function addToCart(product) {
       productMap[productKey] = newProduct;
     }
 
+    // set data to the localStorage
     window.localStorage.setItem('cartItems', JSON.stringify(productMap));
   } catch (event) {
     console.error(event);

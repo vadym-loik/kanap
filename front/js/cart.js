@@ -1,6 +1,6 @@
 /*************** CART ***************/
 
-// find unique key in the cart object
+// find key in the cart object
 function getCartItems() {
   const cartItemsLocal = JSON.parse(localStorage.getItem('cartItems')) || {};
   return Object.keys(cartItemsLocal).map((key) => cartItemsLocal[key]);
@@ -35,6 +35,7 @@ const renderProductCart = (cartItems) => {
             </article>`;
 
     const deleteItems = document.querySelectorAll('.deleteItem');
+    // add eventListeners to all "delete" buttons on the page
     deleteItems.forEach((deleteBtn) => {
       addDeleteEventlistener(deleteBtn);
     });
@@ -42,6 +43,7 @@ const renderProductCart = (cartItems) => {
 };
 renderProductCart(getCartItems());
 
+// add eventListener with using dataset and delete product from the cart
 function addDeleteEventlistener(deleteItem) {
   return deleteItem.addEventListener('click', (event) => {
     const productId = event.target.dataset.key;
@@ -171,6 +173,7 @@ function postFormData() {
   orderBtn.addEventListener('click', (event) => {
     event.preventDefault();
 
+    // check that the inputs are not empty
     if (
       inputFirstName.value == '' ||
       inputLastName.value == '' ||
@@ -179,6 +182,7 @@ function postFormData() {
       inputEmail.value == ''
     ) {
       alert('Please fill in all fields!');
+      // check errorMsg
     } else if (
       firstNameErrorMsg.textContent !== '' ||
       lastNameErrorMsg.textContent !== '' ||
@@ -201,7 +205,7 @@ function postFormData() {
       idsProducts.forEach((_id) => {
         productsId.push(_id);
       });
-
+      // order data for API
       const order = {
         contact: {
           firstName: inputFirstName.value,
@@ -213,7 +217,7 @@ function postFormData() {
         products: productsId,
       };
       console.log(order);
-
+      // fetch POST method
       const options = {
         method: 'POST',
         headers: {
@@ -228,7 +232,7 @@ function postFormData() {
         .then((data) => {
           console.log('Success:', data);
           localStorage.clear();
-
+          // use URL for confirmation page
           window.location.href = 'confirmation.html?orderId=' + data.orderId;
         })
         .catch((error) => {
