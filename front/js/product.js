@@ -78,4 +78,5 @@ const addBtn = document.querySelector('#addToCart');
 addBtn.addEventListener('click', (event) => {
   event.preventDefault();
   addToCart(productData);
+  alert('Product added to the cart.');
 });
