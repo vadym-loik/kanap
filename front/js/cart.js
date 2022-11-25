@@ -94,25 +94,29 @@ const changeQuantity = () => {
   const inputBtn = document.querySelectorAll('.itemQuantity');
   const productMap = JSON.parse(localStorage.getItem('cartItems'));
   // console.log(productMap);
-  const cartItemKeys = Object.keys(productMap);
-  // console.log(cartItemKeys);
 
-  cartItemKeys.forEach((productKey, i) => {
-    inputBtn[i].addEventListener('change', (event) => {
-      event.preventDefault();
+  if (productMap) {
+    const cartItemKeys = Object.keys(productMap);
 
-      const modifiedValue = parseInt(inputBtn[i].value);
-      // console.log(modifiedValue);
+    cartItemKeys.forEach((productKey, i) => {
+      inputBtn[i].addEventListener('change', (event) => {
+        event.preventDefault();
 
-      if (modifiedValue) {
-        productMap[productKey].quantity = modifiedValue;
+        const modifiedValue = parseInt(inputBtn[i].value);
+        // console.log(modifiedValue);
 
-        window.localStorage.setItem('cartItems', JSON.stringify(productMap));
-        getTotalQuantity();
-        // console.log(localStorage);
-      }
+        if (modifiedValue) {
+          productMap[productKey].quantity = modifiedValue;
+
+          window.localStorage.setItem('cartItems', JSON.stringify(productMap));
+          getTotalQuantity();
+          // console.log(localStorage);
+        }
+      });
     });
-  });
+  }
+
+  // console.log(cartItemKeys);
 };
 changeQuantity();
 
